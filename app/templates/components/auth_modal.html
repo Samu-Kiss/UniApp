@@ -552,6 +552,11 @@ function markCloudSyncTimestamp(timestamp = null) {
     localStorage.removeItem(SYNC_PENDING_KEY);
 }
 
+function hasPendingLocalSync() {
+    const pendingSync = getParsedLocal(SYNC_PENDING_KEY, []);
+    return Array.isArray(pendingSync) && pendingSync.length > 0;
+}
+
 function shouldApplyCloudData(data, hasCloudData) {
     if (!hasCloudData) return false;
 
@@ -563,14 +568,17 @@ function shouldApplyCloudData(data, hasCloudData) {
     const localMs = parseDateMs(localStorage.getItem(SYNC_LOCAL_UPDATED_AT_KEY)) ||
         parseDateMs(localStorage.getItem(SYNC_LAST_CLOUD_SYNC_AT_KEY));
 
-    if (!cloudMs || !localMs) {
+    if (cloudMs && !localMs) {
+        return !hasPendingLocalSync();
+    }
+
+    if (!cloudMs) {
         console.log('No hay timestamps suficientes para reemplazar datos locales automáticamente.');
         return false;
     }
 
     return cloudMs > localMs + 1000;
 }
-
 // Sync local data to cloud
 async function syncToCloud() {
     if (!currentUser || !authSession) {
