@@ -14,6 +14,7 @@ const App = {
         
         // Setup global event listeners
         this.setupEventListeners();
+        this.updateGlobalGPA();
         
         // Initialize page-specific modules
         this.initPage();
@@ -245,6 +246,40 @@ const App = {
                 }
             });
         });
+
+        const refreshGlobalGPA = () => this.updateGlobalGPA();
+        window.addEventListener('storageChanged', refreshGlobalGPA);
+        window.addEventListener('planChanged', refreshGlobalGPA);
+        window.addEventListener('planPrincipalChanged', refreshGlobalGPA);
+    },
+
+    /**
+     * Update the GPA indicator shown in the top navigation.
+     */
+    updateGlobalGPA() {
+        const gpaEl = document.getElementById('cumulative-gpa');
+        if (!gpaEl || typeof storage === 'undefined') return;
+
+        const materias = storage.getMaterias();
+        const calificaciones = storage.getCalificaciones();
+        let totalPoints = 0;
+        let gradedCredits = 0;
+
+        calificaciones.forEach(cal => {
+            const materia = materias.find(m => m.codigo === cal.codigo_materia);
+            const nota = Number(cal.nota);
+            const creditos = Number(materia?.creditos || 0);
+
+            if (materia && Number.isFinite(nota) && creditos > 0) {
+                totalPoints += nota * creditos;
+                gradedCredits += creditos;
+            }
+        });
+
+        const gpa = gradedCredits > 0 ? totalPoints / gradedCredits : 0;
+        gpaEl.textContent = gpa > 0 ? gpa.toFixed(2) : '--';
+        gpaEl.classList.toggle('text-red-600', gpa > 0 && gpa < 3.0);
+        gpaEl.classList.toggle('text-accent-600', !(gpa > 0 && gpa < 3.0));
     },
 
     /**

@@ -35,6 +35,9 @@ class StorageManager {
         try {
             localStorage.setItem(this.prefix + key, JSON.stringify(value));
             this.markForSync(key);
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('storageChanged', { detail: { key } }));
+            }
             return true;
         } catch (error) {
             console.error(`Error writing ${key} to localStorage:`, error);
@@ -49,6 +52,9 @@ class StorageManager {
         try {
             localStorage.removeItem(this.prefix + key);
             this.markForSync(key);
+            if (typeof window !== 'undefined') {
+                window.dispatchEvent(new CustomEvent('storageChanged', { detail: { key } }));
+            }
             return true;
         } catch (error) {
             console.error(`Error removing ${key} from localStorage:`, error);
@@ -93,7 +99,7 @@ class StorageManager {
             const defaultPlan = {
                 id: 'default',
                 nombre: 'Mi Plan de Estudios',
-                descripcion: 'Plan de estudios principal',
+                descripcion: 'Plan de estudios base',
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
@@ -238,8 +244,8 @@ class StorageManager {
      * Delete a study plan
      */
     deletePlan(planId) {
-        if (planId === 'default') {
-            console.error('Cannot delete the default plan');
+        if (planId === this.getPlanPrincipal()) {
+            console.error('Cannot delete the base plan');
             return false;
         }
         

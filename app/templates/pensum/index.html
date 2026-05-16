@@ -454,17 +454,20 @@
     <!-- View Toggle -->
     <div class="pensum-view-toggle-row flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3">
         <div class="pensum-view-toggle-wrap">
-        <div class="pensum-view-toggle flex items-center gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg transition-colors">
+        <div class="pensum-view-toggle flex items-center gap-2 rounded-lg transition-colors" role="tablist" aria-label="Vista del pensum">
             <button id="view-tree" onclick="setView('tree')"
-                    class="px-3 py-1 text-sm font-medium rounded-md bg-white dark:bg-gray-700 shadow-sm text-gray-700 dark:text-gray-200 transition-colors">
-                Árbol
+                    class="pensum-view-toggle-btn is-active text-sm font-medium"
+                    aria-pressed="true">
+                Kanban
             </button>
             <button id="view-table" onclick="setView('table')" 
-                    class="px-3 py-1 text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                    class="pensum-view-toggle-btn text-sm font-medium"
+                    aria-pressed="false">
                 Tabla
             </button>
             <button id="view-graph" onclick="setView('graph')" 
-                    class="px-3 py-1 text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                    class="pensum-view-toggle-btn text-sm font-medium"
+                    aria-pressed="false">
                 <span class="flex items-center">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
@@ -473,7 +476,8 @@
                 </span>
             </button>
             <button id="view-stats" onclick="setView('stats')" 
-                    class="px-3 py-1 text-sm font-medium rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors">
+                    class="pensum-view-toggle-btn text-sm font-medium"
+                    aria-pressed="false">
                 <span class="flex items-center">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
@@ -530,7 +534,7 @@
         </div>
     </div>
     
-    <!-- Pensum Tree View (by semester) -->
+    <!-- Pensum Kanban View (by semester) -->
     <div id="pensum-tree-view" class="space-y-6">
         <!-- Will be populated by JavaScript -->
     </div>
@@ -1103,6 +1107,51 @@
     </div>
 </div>
 
+<!-- Base Plan Warning Modal -->
+<div id="base-plan-warning-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
+    <div class="flex items-center justify-center min-h-screen px-4">
+        <div class="fixed inset-0 bg-gray-500 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-80" onclick="closeBasePlanWarningModal()"></div>
+        <div class="relative bg-white dark:bg-gray-800 rounded-xl shadow-xl max-w-md w-full p-4 sm:p-6 transition-colors">
+            <div class="flex items-start gap-3">
+                <div class="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-amber-100 dark:bg-amber-900/40">
+                    <svg class="h-5 w-5 text-amber-600 dark:text-amber-300" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"></path>
+                    </svg>
+                </div>
+                <div class="min-w-0">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Hacer plan base</h3>
+                    <div class="mt-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/40 p-3 text-sm">
+                        <div class="flex items-center justify-between gap-3">
+                            <span class="text-gray-500 dark:text-gray-400">Base actual</span>
+                            <span id="base-plan-current-name" class="font-medium text-gray-800 dark:text-gray-100 text-right">--</span>
+                        </div>
+                        <div class="mt-2 flex items-center justify-between gap-3">
+                            <span class="text-gray-500 dark:text-gray-400">Nuevo base</span>
+                            <span id="base-plan-target-name" class="font-semibold text-amber-700 dark:text-amber-300 text-right">--</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        El plan base no se puede eliminar. Al cambiarlo, el plan anterior podrá eliminarse como cualquier otro.
+                    </p>
+                    <p class="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                        Este cambio no copia, fusiona ni mueve materias, calificaciones u horarios entre planes.
+                    </p>
+                </div>
+            </div>
+            <div class="flex justify-end gap-3 mt-6 mobile-actions">
+                <button onclick="closeBasePlanWarningModal()"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600">
+                    Cancelar
+                </button>
+                <button onclick="confirmBasePlanChange()"
+                        class="px-4 py-2 text-sm font-medium text-white bg-amber-600 rounded-lg hover:bg-amber-700">
+                    Hacer plan base
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Import Modal -->
 <div id="import-modal" class="hidden fixed inset-0 z-50 overflow-y-auto">
     <div class="flex items-center justify-center min-h-screen px-4">
@@ -1212,8 +1261,9 @@
 
 {% block scripts %}
 <script>
-    // Current view mode (tree is default)
+    // Current view mode (kanban is default; stored as "tree" for URL compatibility)
     let currentView = 'tree';
+    let pendingBasePlanId = null;
     
     // Simulation state
     let simulationMode = false;
@@ -1310,11 +1360,11 @@
         
         const planes = storage.getPlanes();
         const planActivo = storage.getPlanActivo();
-        const planPrincipal = storage.getPlanPrincipal();
+        const planBase = storage.getPlanPrincipal();
         
         listEl.innerHTML = planes.map(plan => {
             const isActive = plan.id === planActivo;
-            const isPrincipal = plan.id === planPrincipal;
+            const isBasePlan = plan.id === planBase;
             const materias = storage.getLocal(plan.id === 'default' ? 'materias' : `${plan.id}_materias`) || [];
             const passedCount = materias.filter(m => m.estado === 'passed').length;
             
@@ -1330,7 +1380,7 @@
                         <div class="min-w-0">
                             <div class="flex items-center gap-2">
                                 <p class="text-sm font-medium text-gray-900 dark:text-white truncate">${plan.nombre}</p>
-                                ${isPrincipal ? '<span class="px-1.5 py-0.5 text-[10px] bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full">Principal</span>' : ''}
+                                ${isBasePlan ? '<span class="px-1.5 py-0.5 text-[10px] bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full">Base</span>' : ''}
                             </div>
                             <p class="text-xs text-gray-500 dark:text-gray-400">${materias.length} materias · ${passedCount} aprobadas</p>
                         </div>
@@ -1408,13 +1458,15 @@
         
         const planes = storage.getPlanes();
         const planActivo = storage.getPlanActivo();
-        const planPrincipal = storage.getPlanPrincipal();
+        const planBase = storage.getPlanPrincipal();
         
         listEl.innerHTML = planes.map(plan => {
-            const isDefault = plan.id === 'default';
             const isActive = plan.id === planActivo;
-            const isPrincipal = plan.id === planPrincipal;
+            const isBasePlan = plan.id === planBase;
             const materias = storage.getLocal(plan.id === 'default' ? 'materias' : `${plan.id}_materias`) || [];
+            const baseHelper = isBasePlan
+                ? '<p class="text-xs text-amber-600 dark:text-amber-300 mt-1">El plan base está protegido contra eliminación.</p>'
+                : '';
             
             return `
                 <div class="flex items-center justify-between gap-3 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-lg ${isActive ? 'ring-2 ring-indigo-500' : ''} tablet-stack-actions">
@@ -1422,20 +1474,24 @@
                         <div class="flex flex-wrap items-center gap-2">
                             <p class="font-medium text-gray-900 dark:text-white truncate">${plan.nombre}</p>
                             ${isActive ? '<span class="px-2 py-0.5 text-xs bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 rounded-full">Activo</span>' : ''}
-                            ${isPrincipal ? '<span class="px-2 py-0.5 text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full">Principal</span>' : ''}
-                            ${isDefault ? '<span class="px-2 py-0.5 text-xs bg-gray-200 dark:bg-gray-600 text-gray-600 dark:text-gray-300 rounded-full">Base</span>' : ''}
+                            ${isBasePlan ? '<span class="px-2 py-0.5 text-xs bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 rounded-full">Base</span>' : ''}
                         </div>
                         <p class="text-sm text-gray-500 dark:text-gray-400">${plan.descripcion || 'Sin descripción'}</p>
                         <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">${materias.length} materias</p>
+                        ${baseHelper}
                     </div>
                     <div class="flex items-center gap-1 ml-3">
-                        ${!isPrincipal ? `
-                            <button onclick="setPrincipalPlan('${plan.id}')"
+                        ${!isBasePlan ? `
+                            <button onclick="requestBasePlanChange('${plan.id}')"
                                     class="px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 hover:bg-amber-100 dark:hover:bg-amber-900/50 rounded-lg transition-colors"
-                                    title="Establecer como plan principal">
-                                Principal
+                                    title="Establecer como plan base">
+                                Hacer base
                             </button>
-                        ` : ''}
+                        ` : `
+                            <span class="px-3 py-2 text-xs font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 rounded-lg">
+                                Plan base
+                            </span>
+                        `}
                         <button onclick="openEditPlanModal('${plan.id}')" 
                                 class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors"
                                 title="Editar">
@@ -1443,7 +1499,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/>
                             </svg>
                         </button>
-                        ${!isDefault ? `
+                        ${!isBasePlan ? `
                             <button onclick="confirmDeletePlan('${plan.id}', '${plan.nombre}')" 
                                     class="p-2 text-red-500 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:bg-red-100 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                                     title="Eliminar">
@@ -1458,15 +1514,39 @@
         }).join('');
     }
 
-    function setPrincipalPlan(planId) {
+    function requestBasePlanChange(planId) {
+        pendingBasePlanId = planId;
+        const currentPlan = storage.getPlan(storage.getPlanPrincipal());
+        const targetPlan = storage.getPlan(planId);
+        const currentNameEl = document.getElementById('base-plan-current-name');
+        const targetNameEl = document.getElementById('base-plan-target-name');
+
+        if (currentNameEl) currentNameEl.textContent = currentPlan?.nombre || '--';
+        if (targetNameEl) targetNameEl.textContent = targetPlan?.nombre || '--';
+
+        const modal = document.getElementById('base-plan-warning-modal');
+        if (modal) modal.classList.remove('hidden');
+    }
+
+    function closeBasePlanWarningModal() {
+        pendingBasePlanId = null;
+        const modal = document.getElementById('base-plan-warning-modal');
+        if (modal) modal.classList.add('hidden');
+    }
+
+    function confirmBasePlanChange() {
+        const planId = pendingBasePlanId;
+        if (!planId) return;
+
         if (!storage.setPlanPrincipal(planId)) {
-            showToast('No se pudo establecer el plan principal', 'error');
+            showToast('No se pudo establecer el plan base', 'error');
             return;
         }
 
+        closeBasePlanWarningModal();
         renderPlanList();
         renderManagePlansList();
-        showToast('Plan principal actualizado', 'success');
+        showToast('Plan base actualizado', 'success');
     }
     
     // ==================== EDIT PLAN MODAL ====================
@@ -1507,9 +1587,18 @@
     }
     
     function confirmDeletePlan(planId, planName) {
+        if (planId === storage.getPlanPrincipal()) {
+            showToast('No puedes eliminar el plan base. Elige otro plan base primero.', 'error');
+            return;
+        }
+
         if (confirm(`¿Estás seguro de eliminar el plan "${planName}"? Esta acción no se puede deshacer y se perderán todas las materias y calificaciones asociadas.`)) {
-            storage.deletePlan(planId);
+            if (!storage.deletePlan(planId)) {
+                showToast('No se pudo eliminar el plan', 'error');
+                return;
+            }
             renderManagePlansList();
+            renderPlanList();
             updatePlanSelectorUI();
             showToast('Plan eliminado', 'success');
         }
@@ -1931,8 +2020,8 @@
         
         // Reset all buttons
         [tableBtn, treeBtn, graphBtn, statsBtn].forEach(btn => {
-            btn.classList.remove('bg-white', 'dark:bg-gray-700', 'shadow-sm', 'text-gray-700', 'dark:text-gray-200');
-            btn.classList.add('text-gray-500', 'dark:text-gray-400');
+            btn.classList.remove('is-active');
+            btn.setAttribute('aria-pressed', 'false');
         });
         
         // Hide all views
@@ -1944,24 +2033,24 @@
         // Show selected view
         if (view === 'table') {
             tableView.classList.remove('hidden');
-            tableBtn.classList.add('bg-white', 'dark:bg-gray-700', 'shadow-sm', 'text-gray-700', 'dark:text-gray-200');
-            tableBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
+            tableBtn.classList.add('is-active');
+            tableBtn.setAttribute('aria-pressed', 'true');
         } else if (view === 'graph') {
             graphView.classList.remove('hidden');
-            graphBtn.classList.add('bg-white', 'dark:bg-gray-700', 'shadow-sm', 'text-gray-700', 'dark:text-gray-200');
-            graphBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
+            graphBtn.classList.add('is-active');
+            graphBtn.setAttribute('aria-pressed', 'true');
             // Initialize graph when switching to this view
             setTimeout(() => initializeGraph(), 100);
         } else if (view === 'stats') {
             statsView.classList.remove('hidden');
-            statsBtn.classList.add('bg-white', 'dark:bg-gray-700', 'shadow-sm', 'text-gray-700', 'dark:text-gray-200');
-            statsBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
+            statsBtn.classList.add('is-active');
+            statsBtn.setAttribute('aria-pressed', 'true');
             // Initialize stats when switching to this view
             setTimeout(() => initializeStatsView(), 100);
         } else {
             treeView.classList.remove('hidden');
-            treeBtn.classList.add('bg-white', 'dark:bg-gray-700', 'shadow-sm', 'text-gray-700', 'dark:text-gray-200');
-            treeBtn.classList.remove('text-gray-500', 'dark:text-gray-400');
+            treeBtn.classList.add('is-active');
+            treeBtn.setAttribute('aria-pressed', 'true');
         }
     }
     

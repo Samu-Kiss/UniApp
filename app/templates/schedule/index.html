@@ -36,7 +36,7 @@
         <div class="lg:col-span-1 space-y-4">
             <!-- Semester Selector -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-3 sm:p-4 transition-colors">
-                <label for="schedule-semester-select" class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Semestre</label>
+                <label for="schedule-semester-select" class="form-label-padded block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Semestre</label>
                 <select id="schedule-semester-select" onchange="loadSemesterClasses(this.value)"
                         class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-accent-500 focus:border-accent-500 transition-colors">
                     <!-- Options populated by JS -->
@@ -48,7 +48,7 @@
                 <h3 class="text-sm font-semibold text-gray-700 dark:text-gray-300 mb-3">Agregar Clase</h3>
                 <form id="add-class-form" class="space-y-3">
                     <div>
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Materia</label>
+                        <label class="form-label-padded block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Materia</label>
                         <select id="class-materia" required
                                 class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-accent-500 focus:border-accent-500 transition-colors">
                             <option value="">Seleccionar...</option>
@@ -56,12 +56,12 @@
                     </div>
                     <div class="grid grid-cols-2 gap-2 mobile-grid-1">
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Sección</label>
+                            <label class="form-label-padded block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Sección</label>
                             <input type="text" id="class-section" required placeholder="A1"
                                    class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-accent-500 focus:border-accent-500 transition-colors">
                         </div>
                         <div>
-                            <label class="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Profesor</label>
+                            <label class="form-label-padded block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Profesor</label>
                             <input type="text" id="class-professor" placeholder="Opcional"
                                    class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-accent-500 focus:border-accent-500 transition-colors">
                         </div>
@@ -69,9 +69,9 @@
                     
                     <!-- Time blocks -->
                     <div id="time-blocks-container" class="space-y-2">
-                        <label class="block text-xs font-medium text-gray-600 dark:text-gray-400">Bloques de horario</label>
+                        <label class="form-label-padded block text-xs font-medium text-gray-600 dark:text-gray-400">Bloques de horario</label>
                         <div class="time-block flex items-center space-x-2">
-                            <select class="block-day text-xs border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded focus:ring-accent-500 transition-colors">
+                            <select class="block-day border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded focus:ring-accent-500 transition-colors">
                                 <option value="L">Lun</option>
                                 <option value="M">Mar</option>
                                 <option value="W">Mié</option>
@@ -433,24 +433,24 @@
             <form id="edit-class-form" class="space-y-4">
                 <input type="hidden" id="edit-class-id">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Materia</label>
+                    <label class="form-label-padded block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Materia</label>
                     <input type="text" id="edit-class-materia" readonly
                            class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg bg-gray-50 dark:bg-gray-600">
                 </div>
                 <div class="grid grid-cols-2 gap-3 mobile-grid-1">
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sección</label>
+                        <label class="form-label-padded block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Sección</label>
                         <input type="text" id="edit-class-section" required
                                class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-accent-500 focus:border-accent-500 transition-colors">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profesor</label>
+                        <label class="form-label-padded block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Profesor</label>
                         <input type="text" id="edit-class-professor"
                                class="w-full text-sm border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-lg focus:ring-accent-500 focus:border-accent-500 transition-colors">
                     </div>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bloques de horario</label>
+                    <label class="form-label-padded block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Bloques de horario</label>
                     <div id="edit-time-blocks-container" class="space-y-2"></div>
                     <button type="button" onclick="addEditTimeBlock()"
                             class="mt-2 text-sm text-accent-500 hover:text-accent-600">
@@ -1185,7 +1185,7 @@
         const block = document.createElement('div');
         block.className = 'time-block flex items-center space-x-2';
         block.innerHTML = `
-            <select class="block-day text-xs border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded focus:ring-accent-500 transition-colors">
+            <select class="block-day border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded focus:ring-accent-500 transition-colors">
                 <option value="L">Lun</option>
                 <option value="M">Mar</option>
                 <option value="W">Mié</option>
